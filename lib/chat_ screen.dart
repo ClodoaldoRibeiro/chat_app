@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
 import 'package:chat_app/text_component.dart';
@@ -9,8 +12,25 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  void _sendMessage(String text) {
-    Firestore.instance.collection("posts").add({"text": text});
+  void _sendMessage({String text, File imgFile}) async {
+    Map<String, dynamic> data = {};
+
+    if (imgFile != null) {
+      StorageUploadTask uploadTask = FirebaseStorage.instance
+          .ref()
+          .child(DateTime.now().millisecondsSinceEpoch.toString())
+          .putFile(imgFile);
+
+      StorageTaskSnapshot snapshot = await uploadTask.onComplete;
+      String url = await snapshot.ref.getDownloadURL();
+      print(url);
+      data["imgUrl"] = url;
+    }
+
+    if (text != null) {
+      data["text"] = text;
+    }
+    Firestore.instance.collection("posts").add(data);
   }
 
   @override
@@ -21,6 +41,11 @@ class _ChatScreenState extends State<ChatScreen> {
           elevation: 0,
           backgroundColor: kPrimaryColor,
         ),
-        body: TextComponent(_sendMessage));
+        body: Column(
+          children: <Widget>[
+            Expanded(child: null),
+            TextComponent(_sendMessage),
+          ],
+        ));
   }
 }

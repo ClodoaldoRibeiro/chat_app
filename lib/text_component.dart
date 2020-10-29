@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class TextComponent extends StatefulWidget {
   TextComponent(this.sendMensage);
 
-  Function(String) sendMensage;
+  final Function({String text, File imgFile}) sendMensage;
 
   @override
   _TextComponentState createState() => _TextComponentState();
@@ -26,7 +29,18 @@ class _TextComponentState extends State<TextComponent> {
       margin: const EdgeInsets.symmetric(horizontal: 8),
       child: Row(
         children: <Widget>[
-          IconButton(icon: Icon(Icons.photo_camera), onPressed: () {}),
+          IconButton(
+              icon: Icon(Icons.photo_camera),
+              onPressed: () async {
+                final File imgfile =
+                    await ImagePicker.pickImage(source: ImageSource.camera);
+
+                if (imgfile == null) {
+                  return null;
+                }
+
+                widget.sendMensage(imgFile: imgfile);
+              }),
           Expanded(
               child: TextField(
             controller: _controller,
@@ -38,7 +52,7 @@ class _TextComponentState extends State<TextComponent> {
               });
             },
             onSubmitted: (text) {
-              widget.sendMensage(text);
+              widget.sendMensage(text: text);
               _reset();
             },
           )),
@@ -46,7 +60,7 @@ class _TextComponentState extends State<TextComponent> {
               icon: Icon(Icons.send),
               onPressed: _digitando
                   ? () {
-                      widget.sendMensage(_controller.text);
+                      widget.sendMensage(text: _controller.text);
                       _reset();
                     }
                   : null),
