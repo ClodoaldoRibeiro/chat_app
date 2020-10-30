@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class TextComponent extends StatefulWidget {
-  TextComponent(this.sendMensage);
+  const TextComponent(this.sendMensage);
 
   final Function({String text, File imgFile}) sendMensage;
 
@@ -13,15 +13,13 @@ class TextComponent extends StatefulWidget {
 }
 
 class _TextComponentState extends State<TextComponent> {
+  /// Irá controlar o texto do campo de digitação
+  ///
   final TextEditingController _controller = TextEditingController();
-  bool _digitando = false;
 
-  void _reset() {
-    _controller.clear();
-    setState(() {
-      _digitando = false;
-    });
-  }
+  /// Irá revalar quando o usuário estiver digitando
+  ///
+  bool _digitando = false;
 
   @override
   Widget build(BuildContext context) {
@@ -67,5 +65,12 @@ class _TextComponentState extends State<TextComponent> {
         ],
       ),
     );
+  }
+
+  void _reset() {
+    _controller.clear();
+    setState(() {
+      _digitando = false;
+    });
   }
 }
