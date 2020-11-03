@@ -5,7 +5,16 @@
  ## Sobre o Projeto
  Projeto de um chat online com flutter e Firebase
  
+ ## Tecnologias
+ As tecnologias usadas até o momento são:
+ * [Flutter SDK ](https://flutter.dev/docs/get-started/install/windows) - SDK Flutter para rodar as aplicações.
+ * [Android Studio 4.0](https://developer.android.com/studio) - Ambiente de desenvolvimento.
+ * [Firebase do Google](https://firebase.google.com/) - Ambiente de gerenciamento de dados.
+
+## Instruções de uso
+ Baixe o projeto do **chat_app** e importe no seu ambiente de desenvolvimento.
  
+    
  ## License
  Copyright (c) CTI Sistemas. Todos os direitos reservados.
  Licenciado sob a licença MIT.
