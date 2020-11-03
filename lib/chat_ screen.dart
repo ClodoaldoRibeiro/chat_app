@@ -7,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'constants.dart';
 import 'package:chat_app/text_component.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'chat_message.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -18,13 +19,16 @@ class _ChatScreenState extends State<ChatScreen> {
   final GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
 
   FirebaseUser _firebaseUser;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
 
     FirebaseAuth.instance.onAuthStateChanged.listen((user) {
-      _firebaseUser = user;
+      setState(() {
+        _firebaseUser = user;
+      });
     });
   }
 
@@ -33,15 +37,37 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
         key: globalKey,
         appBar: AppBar(
-          title: Text("Olá nobre!"),
+          title: Text(_firebaseUser != null
+              ? 'Olá,  ${_firebaseUser.displayName}'
+              : 'Chat com flutter'),
+          centerTitle: true,
           elevation: 0,
+          actions: <Widget>[
+            _firebaseUser != null
+                ? IconButton(
+                    icon: Icon(Icons.exit_to_app),
+                    onPressed: () {
+                      FirebaseAuth.instance.signOut();
+                      googleSignIn.signOut();
+
+                      globalKey.currentState.showSnackBar(SnackBar(
+                        content: Text('Logo-of efetuado com sucesso!'),
+                        backgroundColor: kPrimaryColor,
+                      ));
+                    },
+                  )
+                : Container(),
+          ],
           backgroundColor: kPrimaryColor,
         ),
         body: Column(
           children: <Widget>[
             Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-              stream: Firestore.instance.collection("posts").snapshots(),
+              stream: Firestore.instance
+                  .collection("posts")
+                  .orderBy('time')
+                  .snapshots(),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
@@ -56,13 +82,15 @@ class _ChatScreenState extends State<ChatScreen> {
                         itemCount: documents.length,
                         reverse: true,
                         itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(documents[index].data["text"]),
-                          );
+                          return ChatMessage(
+                              documents[index].data,
+                              documents[index].data['uid'] ==
+                                  _firebaseUser?.uid);
                         });
                 }
               },
             )),
+            _isLoading ? LinearProgressIndicator() : Container(),
             TextComponent(_sendMessage),
           ],
         ));
@@ -84,21 +112,29 @@ class _ChatScreenState extends State<ChatScreen> {
       ));
     }
     Map<String, dynamic> data = {
-      "udi": user.uid,
+      "uid": user.uid,
       "senderName": user.displayName,
-      "senderPhotoURL": user.photoUrl
+      "senderPhotoURL": user.photoUrl,
+      "time": Timestamp.now()
     };
 
+    /// Fazer o Upload da imagem
     if (imgFile != null) {
       StorageUploadTask uploadTask = FirebaseStorage.instance
           .ref()
           .child(DateTime.now().millisecondsSinceEpoch.toString())
           .putFile(imgFile);
-
+      setState(() {
+        _isLoading = true;
+      });
       StorageTaskSnapshot snapshot = await uploadTask.onComplete;
       String url = await snapshot.ref.getDownloadURL();
       print(url);
       data["imgUrl"] = url;
+
+      setState(() {
+        _isLoading = false;
+      });
     }
 
     if (text != null) {
