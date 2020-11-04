@@ -16,10 +16,23 @@
  
  ## Telas
  
+ <p align="center">
+<img src="https://github.com/ClodoaldoRibeiro/chat_app/blob/master/screenshots/Home.jpeg" alt="ClodoaldoRibeiro"/>
+<h5 align="center">Tela 1: Home</h5>
+</p>
+<br /> 
+<br /> 
+<br /> 
+<p align="center">
+<img src="https://github.com/ClodoaldoRibeiro/chat_app/blob/master/screenshots/Autenticacao.jpeg" alt="ClodoaldoRibeiro"/>
+<h5 align="center">Tela 2: Autenticação </h5>
+</p>
+
+ 
     
  ## License
  Copyright (c) CTI Sistemas. Todos os direitos reservados.
- Licenciado sob a licença MIT.
+ Licenciado sob a licença [MIT](https://github.com/ClodoaldoRibeiro/chat_app/blob/master/LICENSE.md)
  
  
  <!-- MARKDOWN LINKS & IMAGES -->
