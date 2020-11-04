@@ -12,7 +12,9 @@
  * [Firebase do Google](https://firebase.google.com/) - Ambiente de gerenciamento de dados.
 
 ## Instruções de uso
- Baixe o projeto do **chat_app** e importe no seu ambiente de desenvolvimento.
+ Baixe o projeto do **chat_app** e importe no seu ambiente de desenvolvimento e compile que você terá o projeto instalado.
+ 
+ ## Telas
  
     
  ## License
